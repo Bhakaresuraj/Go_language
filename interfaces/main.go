@@ -8,6 +8,7 @@ type Checker interface{
     Check()
 } 
 
+
 type HttpService struct{
     Name string
     URL string
@@ -25,6 +26,8 @@ func (h HttpService) Check(){
 
 }
 
+type 
+
 func main(){
     fmt.Println("Welcome to Interfaces .......")
 
@@ -32,6 +35,7 @@ func main(){
     services := []Checker{
              HttpService {Name :"example.com",URL :"https://example.com",Healthy :false},
     }
+
     for _,svc :=range services{
             
         svc.Check()
