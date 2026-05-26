@@ -1,0 +1,6 @@
+.container-fluid {
+    padding: 10px;
+    background-color: rgb(209, 250, 250);
+    /* margin: 10px; */
+    height: 12vh;
+}

@@ -13,6 +13,7 @@ type Service struct {
 	URL string
 	Healthy bool
 	StatusCode int
+	Response_time int64 
 	Checked_at time.Time
 }
 
@@ -27,7 +28,5 @@ func (s Service)CheckHealth()(bool,int){
 		return false,0
 	}
 	defer resp.Body.Close()
-	// s.Healthy = resp.StatusCode == 200
-	// fmt.Println("Status Code :",resp.StatusCode)
 	return resp.StatusCode == 200,resp.StatusCode
 }
