@@ -1,4 +1,15 @@
 .side-component{
     display: flex !important;
     flex-direction: column !important;
+
+}
+.side-component-li li{
+    background-color: #081225;
+}
+
+.sidebar{
+    width: 15%;
+    height: 100vh;
+     border: 1px solid #233554;
+    background-color:  #16213e !important;
 }

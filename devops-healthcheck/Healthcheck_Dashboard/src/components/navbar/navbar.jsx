@@ -3,7 +3,7 @@ import './navbar.css'
 export default function Navbar() {
     return (
         <>
-            <nav className="navbar  navbar-expand-lg navbar-light bg-light ">
+            <nav className="navbar navbar-expand-lg navbar-dark ">
                 <div className="container-fluid ">
                     {/* Logo */}
                     <a className="navbar-brand d-flex align-items-center" href="#">
@@ -27,29 +27,22 @@ export default function Navbar() {
                         className="collapse navbar-collapse"
                         id="navbarSupportedContent"
                     >
-
                         {/* Left Menu */}
-                        <ul className="navbar-nav m-0 ms-4">
-
+                        {/* <ul className="navbar-nav m-0 ms-4">
                             <li className="nav-item">
                                 <a className="nav-link active" href="#">
                                     Home
                                 </a>
                             </li>
-
                             <li className="nav-item">
                                 <a className="nav-link" href="#">
                                     Link
                                 </a>
                             </li>
-
-                        </ul>
-
+                        </ul> */}
                         {/* Right Profile */}
                         <ul className="navbar-nav ms-auto">
-
                             <li className="nav-item dropdown">
-
                                 <a
                                     className="nav-link dropdown-toggle"
                                     href="#"
