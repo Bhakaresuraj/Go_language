@@ -9,15 +9,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 )
-
 var db *database.Store
-
-
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome to DevOps Healthcheck.....")
+func AddService(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -46,8 +41,9 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(service)
 }
-func GetAllServices(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+
+func UpdateService(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
 		http.Error(w, "Method Not Allowed", http.StatusInternalServerError)
 		return
 	}
@@ -58,12 +54,17 @@ func GetAllServices(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error Unmarshalling Body :", http.StatusInternalServerError)
 		return
 	}
-	services, err := db.GetAllServices(service.UserID)
+	avg_time := time.Now()
+	service.Healthy, service.StatusCode = service.CheckHealth()
+	responseTime := time.Since(avg_time)
+	service.Checked_at = time.Now()
+	service.Response_time = responseTime.Milliseconds()
+	err = db.UpdateService(service)
 	if err != nil {
-		http.Error(w, "Error Geting Services : ", http.StatusInternalServerError)
+		http.Error(w, "Error Updating Services : ", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(services)
+	json.NewEncoder(w).Encode(service)
 }
 
 func RunAll(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +92,6 @@ func RunAll(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Run all Called")
 	for _, ser := range services {
 		avg_time := time.Now()
-
 		ser.Healthy, ser.StatusCode = ser.CheckHealth()
 		responseTime := time.Since(avg_time)
 		ser.Checked_at = time.Now()
@@ -115,59 +115,41 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method Not Allowed !", http.StatusMethodNotAllowed)
 		return
 	}
-	user_id := r.Header.Get("X-User-ID")
-	if user_id == "" {
-		http.Error(w, "User Id is required :", http.StatusBadRequest)
-		return
-	}
-	userIdInt, err := strconv.Atoi(user_id)
+	var service model.Service
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Invalid User ID", http.StatusBadRequest)
-		return
+		http.Error(w, "Error in Reading Body ", http.StatusInternalServerError)
 	}
-	service_id := r.Header.Get("X-Service-ID")
-	if service_id == "" {
-		http.Error(w, "Service Id is required :", http.StatusBadRequest)
-		return
-	}
-	serviceIdInt, err := strconv.Atoi(service_id)
+	err = json.Unmarshal(body, &service)
 	if err != nil {
-		http.Error(w, "Invalid User ID", http.StatusBadRequest)
-		return
-	}
+		http.Error(w, "Error in Unmarshalling Body ", http.StatusInternalServerError)
 
-	err = db.DeleteService(userIdInt, serviceIdInt)
+	}
+	err = db.DeleteService(service.ID)
+
 	if err != nil {
 		http.Error(w, "Service not deleted ", http.StatusInternalServerError)
 		return
 	}
 	fmt.Fprintln(w, "Successfully deleted Service")
 }
+
 func main() {
-
 	fmt.Println("Server is Running on Port :8080")
-
 	dbUrl := "postgres://suraj:Bhakare@localhost:5432/mydb"
-
 	db = database.NewStore(dbUrl)
-
 	fmt.Println("Database Connected Successfully")
-
 	err := db.RunMigration()
-
 	if err != nil {
 		log.Fatal("Unable to run migration :", err)
 	}
 
-	fmt.Println("Migration Run Successfully and Table Created...!")
-
-
 	// Routes
-	http.HandleFunc("/add", HealthCheckHandler)
-	http.HandleFunc("/services", GetAllServices)
+
+	http.HandleFunc("/add", AddService)
+	http.HandleFunc("/update", UpdateService)
 	http.HandleFunc("/runall", RunAll)
 	http.HandleFunc("/delete", DeleteHandler)
-
 
 	// CORS Middleware
 	c := cors.New(cors.Options{
@@ -179,5 +161,6 @@ func main() {
 	// Wrap Default ServeMux
 	handler := c.Handler(http.DefaultServeMux)
 	// Start Server
+
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }

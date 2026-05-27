@@ -30,28 +30,33 @@ async function AddNewService(formdata) {
     console.log(data)
     return data;
 }
-async function DeleteService(){
-    let response = await fetch(`${Base_URL}/`, {
-        method: "POST",
+async function DeleteService(Id) {
+    let response = await fetch(`${Base_URL}/delete`, {
+        method: "DELETE",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            UserId: Number(formdata.UserId),
-            Name: formdata.Name,
-            URL: formdata.URL
+            Id: Id
         })
     });
-    let data = await response.json();
-    console.log(data)
-    return data;
+    // console.log(response)
+    return;
 }
 
-// AddNewService();
-export { AddNewService, GetAllServices,DeleteService };
 
-
-
-
-
-
+async function UpdateService(formdata) {
+    let response = await fetch(`${Base_URL}/update`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            ...formdata
+        })
+    });
+    // let data = await response.json()
+    // console.log("Update :", data)
+    return;
+}
+export { AddNewService, GetAllServices, DeleteService, UpdateService };

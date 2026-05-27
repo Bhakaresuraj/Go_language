@@ -1,11 +1,25 @@
 import './table.css';
 import { useState } from 'react';
-export default function ServiceTable({ data }) {
+import { DeleteService } from '../../utils/api'
+export default function ServiceTable({ setShowUpdate, setFormData, data }) {
+
+    async function HandleDelete(Id) {
+        await DeleteService(Id);
+    }
 
     const [search, setSearch] = useState("");
     const filteredServices = data.filter((service) =>
         service.Name.toLowerCase().includes(search.toLowerCase())
     );
+
+    async function HandleUpdate(service) {
+        // console.log("from table :", service);
+        setFormData({
+            ...service
+        });
+        setShowUpdate(true);
+    }
+
     return (
         <div className="table-container">
             <div className="table-header">
@@ -64,15 +78,25 @@ export default function ServiceTable({ data }) {
                                 </span>
                             </td>
                             <td>
-                                <span className={
-                                    service.Response_time < 200
-                                        ? "response-good"
-                                        : service.Response_time < 500
-                                            ? "response-medium"
-                                            : "response-bad"
-                                }>
-                                    {service.Response_time} ms
-                                </span>
+                                {
+                                    service.Healthy ? (
+                                        <span
+                                            className={
+                                                service.Response_time < 200
+                                                    ? "response-good"
+                                                    : service.Response_time < 500
+                                                        ? "response-medium"
+                                                        : "response-bad"
+                                            }
+                                        >
+                                            {service.Response_time} ms
+                                        </span>
+                                    ) : (
+                                        <span className="response-timeout">
+                                            Timeout
+                                        </span>
+                                    )
+                                }
                             </td>
                             <td>
                                 <div className="service-name">
@@ -86,13 +110,10 @@ export default function ServiceTable({ data }) {
                             </td>
                             <td>
                                 <div className="action-buttons">
-                                    {/* <button className="action-btn">
-                                        👁
-                                    </button> */}
-                                    <button className="action-btn">
+                                    <button onClick={() => HandleUpdate(service)} className="action-btn">
                                         ✏
                                     </button>
-                                    <button className="action-btn">
+                                    <button onClick={() => HandleDelete(service.ID)} className="action-btn">
                                         🗑
                                     </button>
                                 </div>
@@ -101,6 +122,6 @@ export default function ServiceTable({ data }) {
                     ))}
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 }

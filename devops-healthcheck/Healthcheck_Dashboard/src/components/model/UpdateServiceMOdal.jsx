@@ -1,12 +1,7 @@
 import { useState } from "react";
 import './modal.css'
-import { AddNewService, } from "../../utils/api";
-export default function AddServiceModal({ show, onClose, refreshServices }) {
-    const [formData, setFormData] = useState({
-        Name: "",
-        URL: "",
-        UserId: ""
-    });
+import { UpdateService } from "../../utils/api";
+export default function UpdateServiceModal({ formData, setFormData, show, onClose, refreshServices }) {
     function handleChange(e) {
         setFormData({
             ...formData,
@@ -16,44 +11,38 @@ export default function AddServiceModal({ show, onClose, refreshServices }) {
     async function handleSubmit(e) {
         e.preventDefault();
         try {
-            const response = await AddNewService(formData);
+            // console.log("before Updating",formData);
+            const response = await UpdateService(formData);
             refreshServices();
             onClose();
         } catch (err) {
             console.log(err);
         }
     }
+    // console.log("from data before update:", formData);
+
     if (!show) return null;
     return (
         <div className="modal-overlay">
             <div className="modal-box">
-                <h2>Add New Service</h2>
-
-
+                <h2>Update Service</h2>
                 <form onSubmit={handleSubmit}>
-                    <input
-                        type="number"
-                        name="UserId"
-                        id="user_id"
-                        placeholder="User ID"
-                        value={formData.UserId}
-                        onChange={handleChange}
-                        required
-                    />
+                    <label htmlFor="name">Update Service Name :</label>
                     <input
                         type="text"
-                        name="Name"
                         id="name"
-                        placeholder="Service Name"
+                        name="Name"
+                        placeholder="Update Service Name"
                         value={formData.Name}
                         onChange={handleChange}
                         required
                     />
+                    <label htmlFor="url">Update service URL :</label>
                     <input
+                        id="url"
                         type="text"
                         name="URL"
-                        id="url"
-                        placeholder="Service URL"
+                        placeholder="Update Service URL"
                         value={formData.URL}
                         onChange={handleChange}
                         required
@@ -65,7 +54,7 @@ export default function AddServiceModal({ show, onClose, refreshServices }) {
                             type="submit"
                             className="add-btn"
                         >
-                            Add Service
+                            Update Service
                         </button>
                         <button
                             type="button"

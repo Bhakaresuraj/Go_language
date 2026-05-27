@@ -57,7 +57,7 @@ func (s *Store) GetAllServices(user_id int) ([]model.Service, error) {
 	var services []model.Service
 	for rows.Next() {
 		var service model.Service
-		err = rows.Scan(&service.ID, &service.UserID, &service.Name, &service.URL, &service.Healthy, &service.StatusCode, &service.Checked_at,&service.Response_time)
+		err = rows.Scan(&service.ID, &service.UserID, &service.Name, &service.URL, &service.Healthy, &service.StatusCode, &service.Checked_at, &service.Response_time)
 		if err != nil {
 			return nil, err
 		}
@@ -68,38 +68,47 @@ func (s *Store) GetAllServices(user_id int) ([]model.Service, error) {
 }
 
 func (s *Store) UpdateServiceStatus(service model.Service) error {
-	query := `UPDATE services SET healthy=$1,statusCode=$2,checked_at=$3,response_time=$4 WHERE id=$5`
-	_, err := s.DB.Exec(query, service.Healthy, service.StatusCode, service.Checked_at,service.Response_time,service.ID)
+	query := `UPDATE services SET name=$1,url=$2,healthy=$3,statusCode=$4,checked_at=$5,response_time=$6 WHERE id=$7`
+	_, err := s.DB.Exec(query, service.Name, service.URL, service.Healthy, service.StatusCode, service.Checked_at, service.Response_time, service.ID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Store) DeleteService(user_id, service_id int) error {
-	query := `DELETE FROM services WHERE user_id=$1 AND id=$2`
-	_, err := s.DB.Exec(query, user_id, service_id)
+func (s *Store) UpdateService(service model.Service) error {
+	query := `UPDATE services SET name=$1,url=$2,healthy=$3,statusCode=$4,checked_at=$5,response_time=$6 WHERE id=$7`
+	_, err := s.DB.Exec(query, service.Name, service.URL, service.Healthy, service.StatusCode, service.Checked_at, service.Response_time, service.ID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Store) Select() ([]model.Service, error) {
-	query := `SELECT * FROM services`
-	rows, err := s.DB.Query(query)
+func (s *Store) DeleteService(service_id int) error {
+	query := `DELETE FROM services WHERE id=$1`
+	_, err := s.DB.Exec(query, service_id)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var services []model.Service
-	for rows.Next() {
-		var service model.Service
-		err = rows.Scan(&service.ID, &service.UserID, &service.Name, &service.URL, &service.Healthy, &service.StatusCode, &service.Checked_at)
-		if err != nil {
-			return nil, err
-		}
-		services = append(services, service)
-
-	}
-	return services, nil
+	return nil
 }
+
+// func (s *Store) Select() ([]model.Service, error) {
+// 	query := `SELECT * FROM services`
+// 	rows, err := s.DB.Query(query)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	var services []model.Service
+// 	for rows.Next() {
+// 		var service model.Service
+// 		err = rows.Scan(&service.ID, &service.UserID, &service.Name, &service.URL, &service.Healthy, &service.StatusCode, &service.Checked_at)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		services = append(services, service)
+
+// 	}
+// 	return services, nil
+// }
