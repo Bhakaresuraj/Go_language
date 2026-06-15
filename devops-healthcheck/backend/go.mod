@@ -1,4 +1,4 @@
-module github.com/Bhakaresuraj/Go_language/devops-healthcheck
+module github.com/Bhakaresuraj/Go_language/devops-healthcheck/server
 
 go 1.26.1
 

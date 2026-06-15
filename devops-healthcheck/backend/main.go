@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/database"
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/handlers"
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/middleware"
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/routes"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/database"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/handlers"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/middleware"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/routes"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/worker"
 	"log"
 	"net/http"
-)
 
+)
 func main() {
 	fmt.Println("Server is Running on Port :8080")
 	dbUrl := "postgres://suraj:Bhakare@localhost:5432/mydb"
@@ -22,6 +23,7 @@ func main() {
 	serviceHandler := &handlers.ServiceHandler{
 		DB: db,
 	}
+	go worker.StartBackgroundWorker(db);
 	Routes.RegisterRoutes(serviceHandler)
 	c := middleware.SetupCors()
 	handler := c.Handler(http.DefaultServeMux)

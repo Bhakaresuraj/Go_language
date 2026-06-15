@@ -1,7 +1,7 @@
 package Routes
 
 import (
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/handlers"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/handlers"
 	"net/http"
 )
 

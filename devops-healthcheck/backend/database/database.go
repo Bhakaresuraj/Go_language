@@ -2,7 +2,8 @@ package database
 
 import (
 	"database/sql"
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/model"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/database/migrations"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/model"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"log"
 )
@@ -20,24 +21,17 @@ func NewStore(dbURL string) *Store {
 }
 
 func (s *Store) RunMigration() error {
-	query := `
-	CREATE TABLE IF NOT EXISTS services(
-		id SERIAL PRIMARY KEY,
-		user_id INT NOt NULL, 
-		name VARCHAR(255) NOT NULL	,
-		url VARCHAR(255) NOT NULL,
-		healthy BOOLEAN NOT NULL,
-		statusCode INT NOT NULL,
-		checked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		response_time BIGINT
-	)`
-	_, err := s.DB.Exec(query)
+	err := migrations.CreateServiceTable(s.DB)
 	if err != nil {
-		// log.Fatal("Unable to create table :",err)
+		return err
+	}
+	err = migrations.CreateUserTable(s.DB)
+	if err != nil {
 		return err
 	}
 	return nil
 }
+
 
 func (s *Store) Save(service model.Service) error {
 	query := `INSERT INTO services (user_id,name,url,healthy,statusCode,checked_at,response_time) VALUES($1,$2,$3,$4,$5,$6,$7)`
@@ -51,6 +45,24 @@ func (s *Store) Save(service model.Service) error {
 func (s *Store) GetAllServices(user_id int) ([]model.Service, error) {
 	query := `SELECT * FROM services WHERE user_id =$1`
 	rows, err := s.DB.Query(query, user_id)
+	if err != nil {
+		return nil, err
+	}
+	var services []model.Service
+	for rows.Next() {
+		var service model.Service
+		err = rows.Scan(&service.ID, &service.UserID, &service.Name, &service.URL, &service.Healthy, &service.StatusCode, &service.Checked_at, &service.Response_time)
+		if err != nil {
+			return nil, err
+		}
+		services = append(services, service)
+
+	}
+	return services, nil
+}
+func (s *Store) GetAndRunAllServices() ([]model.Service, error) {
+	query := `SELECT * FROM services`
+	rows, err := s.DB.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +96,6 @@ func (s *Store) UpdateService(service model.Service) error {
 	}
 	return nil
 }
-
 func (s *Store) DeleteService(service_id int) error {
 	query := `DELETE FROM services WHERE id=$1`
 	_, err := s.DB.Exec(query, service_id)
@@ -93,22 +104,3 @@ func (s *Store) DeleteService(service_id int) error {
 	}
 	return nil
 }
-
-// func (s *Store) Select() ([]model.Service, error) {
-// 	query := `SELECT * FROM services`
-// 	rows, err := s.DB.Query(query)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	var services []model.Service
-// 	for rows.Next() {
-// 		var service model.Service
-// 		err = rows.Scan(&service.ID, &service.UserID, &service.Name, &service.URL, &service.Healthy, &service.StatusCode, &service.Checked_at)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		services = append(services, service)
-
-// 	}
-// 	return services, nil
-// }

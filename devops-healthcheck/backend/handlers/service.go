@@ -5,15 +5,17 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	// "sync"
 	"time"
 
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/database"
-	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/model"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/database"
+	"github.com/Bhakaresuraj/Go_language/devops-healthcheck/server/model"
+	// "golang.org/x/tools/go/analysis/passes/defers"
 )
+
 type ServiceHandler struct {
 	DB *database.Store
 }
-
 
 func (h *ServiceHandler) AddService(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -71,7 +73,6 @@ func (h *ServiceHandler) UpdateService(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ServiceHandler) RunAll(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusInternalServerError)
 		return
@@ -87,25 +88,8 @@ func (h *ServiceHandler) RunAll(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error while Unmarshalling body", http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("Request from browser for services")
 	services, err := h.DB.GetAllServices(service.UserID)
-	if err != nil {
-		http.Error(w, "Error while fetching for update :", http.StatusInternalServerError)
-		return
-	}
-	fmt.Println("Run all Called")
-	for _, ser := range services {
-		avg_time := time.Now()
-		ser.Healthy, ser.StatusCode = ser.CheckHealth()
-		responseTime := time.Since(avg_time)
-		ser.Checked_at = time.Now()
-		ser.Response_time = responseTime.Milliseconds()
-		err = h.DB.UpdateServiceStatus(ser)
-		if err != nil {
-			fmt.Println("Update Error :", err)
-			continue
-		}
-	}
-	services, err = h.DB.GetAllServices(service.UserID)
 	if err != nil {
 		http.Error(w, "Error Geting Services : ", http.StatusInternalServerError)
 		return

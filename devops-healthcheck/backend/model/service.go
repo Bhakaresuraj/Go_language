@@ -23,7 +23,10 @@ func NewService(name,url string)Service{
 }
 func (s Service)CheckHealth()(bool,int){
 	//implement the logic to check the health of the service
-	resp,err:=http.Get(s.URL)
+	client := http.Client{
+		Timeout: 2 * time.Second,
+	}
+	resp, err := client.Get(s.URL)
 	if err != nil{
 		return false,0
 	}
