@@ -70,7 +70,7 @@ func (a *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 			Success: false,
 			Message: "Server Error",
 		}
-		helper.SendResponse(w, http.StatusInternalServerError,response)
+		helper.SendResponse(w, http.StatusInternalServerError, response)
 		return
 	}
 	user.Password = string(hashpassword)
@@ -86,10 +86,10 @@ func (a *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response := model.ApiResponse{
-			Success: true,
-			Message: "User Registered Successfully..!",
-		}
-	helper.SendResponse(w, http.StatusOK,response)
+		Success: true,
+		Message: "User Registered Successfully..!",
+	}
+	helper.SendResponse(w, http.StatusOK, response)
 
 }
 
@@ -99,7 +99,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 			Success: false,
 			Message: "Method not allowed ",
 		}
-		helper.SendResponse(w, http.StatusInternalServerError,response)
+		helper.SendResponse(w, http.StatusInternalServerError, response)
 		return
 	}
 	defer r.Body.Close()
@@ -120,7 +120,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 			Success: false,
 			Message: "Error Unmarshalling User body",
 		}
-		helper.SendResponse(w, http.StatusInternalServerError,response)
+		helper.SendResponse(w, http.StatusInternalServerError, response)
 		return
 	}
 	if !helper.ValidateUserRequest(user) {
@@ -144,11 +144,12 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	if !isLogedIN {
 		response := model.ApiResponse{
 			Success: false,
-			Message:"Invalid Credentials",
+			Message: "Invalid Credentials",
 		}
-		helper.SendResponse(w, http.StatusBadRequest,response)
+		helper.SendResponse(w, http.StatusBadRequest, response)
 		return
 	}
+	user.ID=present_user.ID
 	token, err := utils.GenerateToken(user)
 	if err != nil {
 		response := model.ApiResponse{
@@ -158,11 +159,12 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		helper.SendResponse(w, http.StatusBadRequest, response)
 		return
 	}
+	fmt.Println("User from DB: for login", user)
 	response := model.ApiResponse{
-			Success: true,
-			Message: "Login Successfully..!",
-			Token: token,
-		}
+		Success: true,
+		Message: "Login Successfully..!",
+		Token:   token,
+	}
 	helper.SendResponse(w, http.StatusOK, response)
 
 }
