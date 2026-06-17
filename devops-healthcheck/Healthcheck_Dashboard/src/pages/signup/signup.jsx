@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function Signup() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        name: "",
+        username: "",
         email: "",
         password: "",
         confirmPassword: ""
@@ -31,24 +31,30 @@ export default function Signup() {
         try {
 
             const response = await fetch(
-                "http://localhost:8080/signup",
+                "http://localhost:8080/register",
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        name: formData.name,
+                        username: formData.username,
                         email: formData.email,
                         password: formData.password
                     })
                 }
             );
             const data = await response.json();
-            console.log(data);
-            alert("Signup Successful");
-            /* REDIRECT */
-            navigate("/login");
+            // console.log(data);
+            if (data.Success) {
+                alert(data.Message);
+                /* REDIRECT */
+                navigate("/login");
+            } else {
+                alert(data.Message)
+                navigate("/signup")
+            }
+
 
         } catch (error) {
             console.log(error);
@@ -70,15 +76,15 @@ export default function Signup() {
                 >
                     {/* NAME */}
                     <div className="input-group">
-                        <label htmlFor="name">
+                        <label htmlFor="username">
                             Name
                         </label>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Enter Name"
-                            value={formData.name}
+                            id="username"
+                            name="username"
+                            placeholder="Enter username"
+                            value={formData.username}
                             onChange={handleChange}
                             required
                         />

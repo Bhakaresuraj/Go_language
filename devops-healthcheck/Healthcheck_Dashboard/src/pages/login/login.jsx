@@ -17,6 +17,7 @@ export default function Login() {
     async function handleSubmit(event) {
         event.preventDefault();
         try {
+            // console.log(formData);
             const response = await fetch(
                 "http://localhost:8080/login",
                 {
@@ -28,15 +29,20 @@ export default function Login() {
                 }
             );
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             /* STORE TOKEN */
-            localStorage.setItem(
-                "token",
-                data.token
-            );
-            /* REDIRECT */
-            navigate("/dashboard");
-        }catch (error) {
+            if (data.Success) {
+                localStorage.setItem(
+                    "token",
+                    data.token
+                );
+                /* REDIRECT */
+                navigate("/dashboard");
+            } else {
+                alert(data.Message)
+                navigate("/login");
+            }
+        } catch (error) {
             console.log(error);
         }
     }

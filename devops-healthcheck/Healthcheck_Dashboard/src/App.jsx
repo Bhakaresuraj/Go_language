@@ -9,24 +9,17 @@ function App() {
   return (
 
     <BrowserRouter>
-
       <Routes>
-
         <Route path="/" element={<IndexPage />} />
-
         <Route path="/login" element={<Login />} />
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
-        <Route
-          path="/dashboard"
-          element={<DashboardPage />}
-        />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
-
     </BrowserRouter>
   );
 }
 
 export default App;
+
+
+
