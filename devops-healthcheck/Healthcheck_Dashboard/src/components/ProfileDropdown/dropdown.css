@@ -1,0 +1,94 @@
+.avatar{
+
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#3b82f6;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:18px;
+    font-weight:bold;
+    margin-right:12px;
+}
+.profile-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    border:none;
+
+    background:transparent;
+
+    color:white;
+
+    cursor:pointer;
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    transition:.3s;
+}
+
+.profile-btn:hover{
+
+    background:#16213e;
+}
+.profile-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    margin-right:8px;
+}
+
+.username{
+
+    font-weight:600;
+
+    font-size:15px;
+}
+
+.role{
+
+    color:#94a3b8;
+
+    font-size:12px;
+}
+.dropdown-menu{
+
+    margin-top:15px;
+
+    background:#16213e;
+
+    border:1px solid #294a74;
+
+    border-radius:12px;
+
+    min-width:250px;
+}
+
+.dropdown-header{
+
+    color:white;
+
+    padding:15px;
+}
+
+.dropdown-item{
+
+    color:white;
+}
+
+.dropdown-item:hover{
+
+    background:#223b67;
+
+    color:white;
+}

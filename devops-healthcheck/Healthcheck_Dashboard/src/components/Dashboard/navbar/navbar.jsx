@@ -1,5 +1,5 @@
 import './navbar.css'
-
+import ProfileDropdown from "../../ProfileDropdown/profileDropdown"
 export default function Navbar() {
     return (
         <>
@@ -21,14 +21,13 @@ export default function Navbar() {
                     >
                         <span className="navbar-toggler-icon"></span>
                     </button>
-
                     {/* Navbar Content */}
                     <div
                         className="collapse navbar-collapse"
                         id="navbarSupportedContent"
                     >
                         {/* Left Menu */}
-                        {/* <ul className="navbar-nav m-0 ms-4">
+                        <ul className="navbar-nav m-0 ms-4">
                             <li className="nav-item">
                                 <a className="nav-link active" href="#">
                                     Home
@@ -39,55 +38,15 @@ export default function Navbar() {
                                     Link
                                 </a>
                             </li>
-                        </ul> */}
-                        {/* Right Profile */}
-                        <ul className="navbar-nav ms-auto">
-                            <li className="nav-item dropdown">
-                                <a
-                                    className="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="navbarDropdown"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                >
-                                    Profile
-                                </a>
-
-                                <ul className="dropdown-menu dropdown-menu-end">
-
-                                    <li>
-                                        <a className="dropdown-item" href="#">
-                                            Profile
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a className="dropdown-item" href="#">
-                                            Settings
-                                        </a>
-                                    </li>
-
-                                    <li><hr className="dropdown-divider" /></li>
-
-                                    <li>
-                                        <a className="dropdown-item text-danger" href="#">
-                                            <i className="bi bi-box-arrow-right me-2"></i>
-                                            Logout
-                                        </a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-
                         </ul>
 
+                        {/* Right Profile */}
+                        <div className=" ms-auto">
+                            <ProfileDropdown />
+                        </div>
                     </div>
-
                 </div>
-
-
-            {/* <hr /> */}
+                {/* <hr /> */}
             </nav>
             {/* <hr /> */}
         </>

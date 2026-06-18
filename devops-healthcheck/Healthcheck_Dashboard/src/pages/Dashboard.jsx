@@ -8,6 +8,8 @@ import Navbar from '../components/Dashboard/navbar/navbar'
 import ServiceTable from '../components/Dashboard/Service-Table/servicetable'
 import AddServiceModal from '../components/Dashboard/model/AddserviceModal'
 import UpdateServiceModal from '../components/Dashboard/model/UpdateServiceMOdal'
+import EmptyState from "../components/Dashboard/EmptyState/emptyState";
+
 function App() {
 
     const [showModal, setShowModal] = useState(false);
@@ -48,7 +50,6 @@ function App() {
     const [formData, setFormData] = useState({
         Name: "",
         URL: "",
-        UserId: ""
     });
 
     return (
@@ -59,13 +60,18 @@ function App() {
                 <div ref={topRef}>
                     <Navbar></Navbar>
                 </div>
+
                 <Card data={services}></Card>
-                <div ref={tableRef}>
-                    <ServiceTable
-                        setShowUpdate={setShowUpdate}
-                        setFormData={setFormData}
-                        data={services}></ServiceTable>
-                </div>
+                {
+                    services.length === 0 ?
+                        <EmptyState openModal={() => setShowModal(true)} /> :
+                        <div ref={tableRef}>
+                            <ServiceTable
+                                setShowUpdate={setShowUpdate}
+                                setFormData={setFormData}
+                                data={services}></ServiceTable>
+                        </div>
+                }
             </div>
             <AddServiceModal
                 show={showModal}
@@ -74,6 +80,7 @@ function App() {
                 }
                 refreshServices={fetchServices}
             />
+
             <UpdateServiceModal
                 formData={formData}
                 setFormData={setFormData}

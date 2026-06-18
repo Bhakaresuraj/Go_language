@@ -5,7 +5,6 @@ export default function AddServiceModal({ show, onClose, refreshServices }) {
     const [formData, setFormData] = useState({
         Name: "",
         URL: "",
-        UserId: 1
     });
     function handleChange(e) {
         setFormData({
@@ -17,6 +16,7 @@ export default function AddServiceModal({ show, onClose, refreshServices }) {
         e.preventDefault();
         try {
             const response = await AddNewService(formData);
+            alert(response.Message);
             refreshServices();
             onClose();
         } catch (err) {
@@ -28,18 +28,7 @@ export default function AddServiceModal({ show, onClose, refreshServices }) {
         <div className="modal-overlay">
             <div className="modal-box">
                 <h2>Add New Service</h2>
-
-
                 <form onSubmit={handleSubmit}>
-                    {/* <input
-                        type="number"
-                        name="UserId"
-                        id="user_id"
-                        placeholder="User ID"
-                        value={formData.UserId}
-                        onChange={handleChange}
-                        required
-                    /> */}
                     <input
                         type="text"
                         name="Name"

@@ -11,8 +11,8 @@ export default function UpdateServiceModal({ formData, setFormData, show, onClos
     async function handleSubmit(e) {
         e.preventDefault();
         try {
-            // console.log("before Updating",formData);
-            const response = await UpdateService(formData);
+            const response = await UpdateService(formData);            
+            alert(response.Message);
             refreshServices();
             onClose();
         } catch (err) {

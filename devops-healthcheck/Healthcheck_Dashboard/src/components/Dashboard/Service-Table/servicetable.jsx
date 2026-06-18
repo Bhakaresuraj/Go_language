@@ -10,7 +10,8 @@ export default function ServiceTable({ setShowUpdate, setFormData, data }) {
         if (!confirmDelete) {
             return;
         }
-        await DeleteService(Id);
+        let response = await DeleteService(Id);
+        alert(response.Message);
     }
 
     const [search, setSearch] = useState("");
@@ -98,7 +99,7 @@ export default function ServiceTable({ setShowUpdate, setFormData, data }) {
                                             {service.Response_time} ms
                                         </span>
                                     ) : (
-                                        <span  className="down timeout">
+                                        <span className="down timeout">
                                             Timeout
                                         </span>
                                     )

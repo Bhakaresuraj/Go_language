@@ -4,14 +4,15 @@
     margin-top: -1px;
     background-color: #081225;
     margin-left:1px;
+    padding: auto;
+    /* padding-right: 50px; */
     position: sticky;
     /* border-radius: 20px; */
     top: 0;
     z-index: 1000;
     /* opacity: ; */
 }
-
-
 .navbar:hover {
     background: #233554
 }
+

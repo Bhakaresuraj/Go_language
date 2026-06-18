@@ -1,7 +1,11 @@
 import "./login.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/context";
+import { useLocation } from "react-router-dom";
 export default function Login() {
+    const { login } = useAuth();
+    const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
@@ -32,15 +36,11 @@ export default function Login() {
             // console.log(data);
             /* STORE TOKEN */
             if (data.Success) {
-                localStorage.setItem(
-                    "token",
-                    data.token
-                );
-                /* REDIRECT */
-                navigate("/dashboard");
+                const redirectTo = location.state?.from || "/";
+                login(data.data, data.token);
+                navigate(redirectTo, { replace: true });
             } else {
                 alert(data.Message)
-                navigate("/login");
             }
         } catch (error) {
             console.log(error);

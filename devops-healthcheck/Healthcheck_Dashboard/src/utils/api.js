@@ -1,62 +1,67 @@
 // for fetching data from the api from the backend
 const Base_URL = import.meta.env.VITE_BACKEND_BASE_URL || "http://localhost:8080";
+
+
 async function GetAllServices() {
-    let response = await fetch(`${Base_URL}/runall`, {
+    const token = localStorage.getItem("auth_token");
+    let response = await fetch(`${Base_URL}/services`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            UserId: 1
-        })
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
     });
     let data = await response.json();
-    return data;
-
+    console.log( data);
+    return data.data;
 }
+
+
 async function AddNewService(formdata) {
+    const token = localStorage.getItem("auth_token");
     let response = await fetch(`${Base_URL}/add`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-            UserId: Number(formdata.UserId),
             Name: formdata.Name,
             URL: formdata.URL
         })
     });
-    let data = await response.json();
-    console.log(data)
-    return data;
+    return await response.json();
+
 }
 async function DeleteService(Id) {
+    const token = localStorage.getItem("auth_token");
     let response = await fetch(`${Base_URL}/delete`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             Id: Id
         })
     });
-    // console.log(response)
-    return;
+    const data = await response.json();
+    return data;
 }
-
-
 async function UpdateService(formdata) {
+    const token = localStorage.getItem("auth_token");
     let response = await fetch(`${Base_URL}/update`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             ...formdata
         })
     });
-    // let data = await response.json()
-    // console.log("Update :", data)
-    return;
+    const data = await response.json();
+    // console.log(data);
+    return data;
 }
 export { AddNewService, GetAllServices, DeleteService, UpdateService };
