@@ -132,6 +132,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	isExists, err, present_user := a.DB.GetUserByEmail(user.Email)
+	fmt.Println(present_user)
 	if isExists == false {
 		response := model.ApiResponse{
 			Success: false,
@@ -149,7 +150,7 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		helper.SendResponse(w, http.StatusBadRequest, response)
 		return
 	}
-	user.ID=present_user.ID
+	user.ID = present_user.ID
 	token, err := utils.GenerateToken(user)
 	if err != nil {
 		response := model.ApiResponse{
@@ -164,6 +165,11 @@ func (a *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		Success: true,
 		Message: "Login Successfully..!",
 		Token:   token,
+		Data: model.UserResponse{
+			ID:       present_user.ID,
+			Username: present_user.Username,
+			Email:    present_user.Email,
+		},
 	}
 	helper.SendResponse(w, http.StatusOK, response)
 

@@ -134,7 +134,7 @@ func (h *ServiceHandler) GetAllServices(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	userID := r.Context().Value("user_id").(int)
-	fmt.Println("Request from browser for services")
+	fmt.Println("Request from browser for services",userID)
 	services, err := h.DB.GetAllServices(userID)
 	if err != nil {
 		response := model.ApiResponse{
@@ -143,6 +143,9 @@ func (h *ServiceHandler) GetAllServices(w http.ResponseWriter, r *http.Request) 
 		}
 		helper.SendResponse(w, http.StatusInternalServerError, response)
 		return
+	}
+	if services == nil {
+		services = []model.Service{}
 	}
 	response := model.ApiResponse{
 		Success: true,
